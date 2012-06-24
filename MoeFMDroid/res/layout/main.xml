@@ -8,5 +8,25 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/hello" />
-
+    <Button
+        android:id="@+id/bt"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="sratr" />
+    <Button
+        android:id="@+id/bto"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dip"
+        android:text="Classic" />
+    <TextView 
+	    android:id="@+id/s_token"
+	    android:layout_height="wrap_content"
+	    android:layout_width="fill_parent"
+	    android:text="none"/>
+	<TextView 
+	    android:id="@+id/s_token_secret"
+	    android:layout_height="wrap_content"
+	    android:layout_width="fill_parent"
+	    android:text="none"/>
 </LinearLayout>

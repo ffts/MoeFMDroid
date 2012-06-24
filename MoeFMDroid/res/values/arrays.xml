@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="playmode" >
+        <item>魔力播放</item>
+        <item>我收藏的转辑</item>
+        <item>我喜欢的曲目</item>
+        <item>我收藏的电台</item>
+    </string-array>
+</resources>
