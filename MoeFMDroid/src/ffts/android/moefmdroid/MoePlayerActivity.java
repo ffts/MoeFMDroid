@@ -1,6 +1,7 @@
 package ffts.android.moefmdroid;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Formatter;
@@ -29,6 +30,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -320,7 +322,9 @@ public class MoePlayerActivity extends SherlockActivity implements OnNavigationL
 	            	Drawable play = getResources().getDrawable(R.drawable.btn_play);
 					btPlay.setImageDrawable(play);
 	            }
-	            mService.sendSongInfo();
+	            if(mService.mListCur!=null){
+	            	 mService.sendSongInfo();
+	            }
 //	            Log.i("MOE", "bind");
 	        }
 
@@ -358,7 +362,8 @@ public class MoePlayerActivity extends SherlockActivity implements OnNavigationL
 //	    	Log.i("MOE", info[1]);
 	    	tvAblum.setText(info[2]);
 //	    	Log.i("MOE", info[2]);
-	    	updateCover(info[3]);
+//	    	updateCover(info[3]);
+	    	new CoverUpdater().execute(info[3]);
 	    	updateLike(flag);
 	    	/*if(flag==0){
 	    		Drawable pause = getResources().getDrawable(R.drawable.btn_pause);
@@ -372,43 +377,39 @@ public class MoePlayerActivity extends SherlockActivity implements OnNavigationL
 	    	
 	    }
 	    
-	    private Drawable loadImageFromNetwork(String imageUrl)  
-	    {  
-	        Drawable drawable = null;  
-	        try {  
-	            // 可以在这里通过文件名来判断，是否本地有此图片  
-	            drawable = Drawable.createFromStream(  
-	                    new URL(imageUrl).openStream(), "image.jpg");  
-	        } catch (IOException e) {  
-//	            Log.d("test", e.getMessage());  
-	        }  
-	        if (drawable == null) {  
-//	            Log.d("test", "null drawable");  
-	        } else {  
-//	            Log.d("test", "not null drawable");  
-	        }  
-	          
-	        return drawable ;  
-	    }  
 	    
-	    public void updateCover(final String url){
-	    	new Thread(new Runnable(){  
-	    	    Drawable drawable = loadImageFromNetwork(url);  
-	    	    @Override  
-	    	    public void run() {  
-	    	          
-	    	        // post() 特别关键，就是到UI主线程去更新图片                  
-	    	        ivCover.post(new Runnable(){  
+	    class CoverUpdater extends AsyncTask<String, String, Drawable>{
+
+			@Override
+			protected Drawable doInBackground(String... params) {
+				// TODO Auto-generated method stub
+				Drawable drawable = null;
+				try {
+					drawable = Drawable.createFromStream( new URL(params[0]).openStream(), "image.jpg");
+				} catch (MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return drawable;
+			}
+
+			@Override
+			protected void onPostExecute(final Drawable result) {
+				// TODO Auto-generated method stub
+				super.onPostExecute(result);
+				ivCover.post(new Runnable(){  
 	    	        @Override  
 	    	        public void run() {  
 	    	            // TODO Auto-generated method stub  
-	    	        	ivCover.setImageDrawable(drawable) ;  
-	    	        }}) ;  
-	    	        }  
-	    	          
-	    	}).start()  ;  
+	    	        	ivCover.setImageDrawable(result) ;  
+	    	        }}) ; 
+			}
+			
+	    	
 	    }
-	    
 	    public void updateLike(int flag){
 	    	
 	    	final int likeFlag = flag;
@@ -607,4 +608,5 @@ public class MoePlayerActivity extends SherlockActivity implements OnNavigationL
 			it.setClass(MoePlayerActivity.this, MoeSettingsActivity.class);
 			startActivity(it);
 	    }
+
 }

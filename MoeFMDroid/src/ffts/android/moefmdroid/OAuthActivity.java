@@ -39,7 +39,7 @@ public class OAuthActivity extends Activity {
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
 			
-    		String authUrl = "none";
+    		/*String authUrl = "none";
 			try {
 				authUrl = moeOAuth.getRequestToken();
 			} catch (OAuthMessageSignerException e1) {
@@ -55,8 +55,34 @@ public class OAuthActivity extends Activity {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-//			Log.i("MOE", authUrl);
-    		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl)));
+			Log.i("MOE", authUrl);
+    		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl)));*/
+			Thread th = new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					String authUrl = "none";
+					try {
+						authUrl = moeOAuth.getRequestToken();
+					} catch (OAuthMessageSignerException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (OAuthNotAuthorizedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (OAuthExpectationFailedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (OAuthCommunicationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+//					Log.i("MOE", authUrl);
+					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl)));
+				}
+			});
+			th.start();
 		}
 	};
 	
@@ -67,7 +93,41 @@ public class OAuthActivity extends Activity {
     	Uri uri = intent.getData();
     	String verifier = uri.getQueryParameter(oauth.signpost.OAuth.OAUTH_VERIFIER);
     	moeOAuth.setVerifier(verifier);
-    	try {
+    	Thread th = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					moeOAuth.getAccessToken();
+				} catch (OAuthMessageSignerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (OAuthNotAuthorizedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (OAuthExpectationFailedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (OAuthCommunicationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				Editor ed = sp.edit();
+//		    	User user = new User(moeOAuth.getAccess_Token(), moeOAuth.getAccess_Token_Secret());
+		    	ed.putString("access_token", moeOAuth.getAccess_Token());
+		    	ed.putString("access_token_secret", moeOAuth.getAccess_Token_Secret());
+//		    	ed.putLong("uid", user.getID());
+//		    	ed.putString("user_name", user.getName());
+		    	ed.commit();
+		    	Intent it = new Intent();
+		    	it.setClass(OAuthActivity.this, MoePlayerActivity.class);
+		    	startActivity(it);
+		    	onDestroy();
+			}
+		});
+    	th.start();
+    	/*try {
 			moeOAuth.getAccessToken();
 		} catch (OAuthMessageSignerException e) {
 			// TODO Auto-generated catch block
@@ -93,7 +153,7 @@ public class OAuthActivity extends Activity {
     	Intent it = new Intent();
     	it.setClass(OAuthActivity.this, MoePlayerActivity.class);
     	startActivity(it);
-    	onDestroy();
+    	onDestroy();*/
 	}
 	
 	public void onDestroy() { 

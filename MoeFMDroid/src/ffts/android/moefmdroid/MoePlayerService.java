@@ -22,6 +22,7 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
@@ -56,13 +57,13 @@ public class MoePlayerService extends Service {
 		SharedPreferences sp = getSharedPreferences("MoeFM", MODE_PRIVATE);
 		mUser = new User(sp.getString("access_token", ""), sp.getString("access_token_secret", ""));
 		mPlayer = new  Player();
-		initPlayerService();
+//		initPlayerService();
 	}
 
 	@Override
 	public IBinder onBind(Intent intent) {
 		// TODO Auto-generated method stub
-//		Log.i("MOE", "in service onBind");
+		Log.d("MOE", "in service onBind");
 			startPlay();
 		
 		return mBinder;
@@ -76,7 +77,41 @@ public class MoePlayerService extends Service {
 	}
 	
 	public void initPlayerService(){
-		try {
+		
+		Thread th = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					mListA = updatePlayList();
+				} catch (OAuthMessageSignerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (OAuthExpectationFailedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (OAuthCommunicationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (URISyntaxException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				mListCur = mListA;
+			}
+		});
+		th.start();
+		/*try {
 //			updatePlayList(mListA)
 			mListA = updatePlayList();
 		} catch (OAuthMessageSignerException e) {
@@ -102,7 +137,7 @@ public class MoePlayerService extends Service {
 			e.printStackTrace();
 		}
 		
-		mListCur = mListA;
+		mListCur = mListA;*/
 	}
 	
 	public void startPlay() {
@@ -111,7 +146,92 @@ public class MoePlayerService extends Service {
 		}else{
 			
 		}*/
-		try {
+		/*updateTask task = new updateTask();
+		task.execute("start");*/
+		Thread th = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					mListA = updatePlayList();
+				} catch (OAuthMessageSignerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (OAuthExpectationFailedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (OAuthCommunicationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (URISyntaxException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				mListCur = mListA;
+				try {
+					mPlayer.initPlayer();
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SecurityException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalStateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				Thread timeUpdater = new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						sendTime();
+					}
+				});
+				timeUpdater.start();
+				sendSongInfo(mListCur.get(0));
+				MoePlayerService.this.notify(mListCur.get(0));
+				try {
+					mListB = updatePlayList();
+				} catch (OAuthMessageSignerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (OAuthExpectationFailedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (OAuthCommunicationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (URISyntaxException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		th.start();
+		/*try {
 			mPlayer.initPlayer();
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
@@ -125,8 +245,8 @@ public class MoePlayerService extends Service {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		Thread timeUpdater = new Thread(new Runnable() {
+		}*/
+		/*Thread timeUpdater = new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
@@ -136,10 +256,42 @@ public class MoePlayerService extends Service {
 		});
 		timeUpdater.start();
 		sendSongInfo(mListCur.get(0));
-		notify(mListCur.get(0));
+		notify(mListCur.get(0));*/
 //		Log.i("MOE", "Player init");
 //		updatePlayList(mListB);
-		try {
+		/*Thread th2 = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					mListB = updatePlayList();
+				} catch (OAuthMessageSignerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (OAuthExpectationFailedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (OAuthCommunicationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (URISyntaxException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		th2.start();*/
+		/*try {
 			mListB = updatePlayList();
 		} catch (OAuthMessageSignerException e) {
 			// TODO Auto-generated catch block
@@ -162,7 +314,7 @@ public class MoePlayerService extends Service {
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 //		Log.i("MOE", "listB update");
 	}
 	
@@ -194,7 +346,7 @@ public class MoePlayerService extends Service {
 						Song song = new Song();
 						JSONObject moeSong = jso.getJSONObject("response").getJSONArray("playlist").getJSONObject(i);
 						song.setTitle(moeSong.getString("title"));
-//						Log.i("MOE", song.getTitle());
+						Log.i("MOE", song.getTitle());
 						song.setUrl(moeSong.getString("url"));
 //						Log.i("MOE", song.getUrl());
 						song.setID(moeSong.getString("sub_id"));
@@ -229,10 +381,74 @@ public class MoePlayerService extends Service {
 	public void preparePlayList() throws OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, ParseException, URISyntaxException, IOException, JSONException{
 		if(isDiscA){
 //			updatePlayList(mListB);
-			mListB = updatePlayList();
+//			mListB = updatePlayList();
+			Thread th = new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					try {
+						mListB = updatePlayList();
+					} catch (OAuthMessageSignerException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (OAuthExpectationFailedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (OAuthCommunicationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (URISyntaxException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			});
+			th.start();
 		}else{
 //			updatePlayList(mListA);
-			mListA = updatePlayList();
+//			mListA = updatePlayList();
+			Thread th = new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					try {
+						mListA = updatePlayList();
+					} catch (OAuthMessageSignerException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (OAuthExpectationFailedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (OAuthCommunicationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (URISyntaxException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			});
+			th.start();
 		}
 	}
 	
@@ -267,17 +483,37 @@ public class MoePlayerService extends Service {
 			mPlayMode = mode;
 			uNextPage = "none";
 			mPlayer.reset();
-			initPlayerService();
+//			initPlayerService();
 			startPlay();
 	
 		}
 	}
-	public void addFav(int flag){
-		mUser.addFav(mListCur.get(mCount).getID(), flag);
+	public void addFav(final int flag){
+//		mUser.addFav(mListCur.get(mCount).getID(), flag);
+		final String id = mListCur.get(mCount).getID();
+		Thread th = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				mUser.addFav(id, flag);
+			}
+		});
+		th.start();
 	}
 	
 	public void deleteFav(){
-		mUser.deleteFav(mListCur.get(mCount).getID());
+//		mUser.deleteFav(mListCur.get(mCount).getID());
+		final String id = mListCur.get(mCount).getID();
+		Thread th = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				mUser.deleteFav(id);
+			}
+		});
+		th.start();
 	}
 	
 	public void notify(Song song){
@@ -322,8 +558,17 @@ public class MoePlayerService extends Service {
 				@Override
 				public void onCompletion(MediaPlayer mp) {
 					// TODO Auto-generated method stub
+					final String id = mListCur.get(mCount).getID();
+					Thread th = new Thread(new Runnable() {
+						
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							mUser.setListened(id);
+						}
+					});
+					th.start();
 					try {
-						mUser.setListened(mListCur.get(mCount).getID());
 						playNext();
 					} catch (IllegalArgumentException e) {
 						// TODO Auto-generated catch block
@@ -419,15 +664,103 @@ public class MoePlayerService extends Service {
 	class updateThread implements Runnable{
 
 		Vector<Song> list;
-		Thread t = new Thread(this);
+		Thread th = new Thread(this);
 		public Vector<Song> update(){
-			t.start();
+			th.start();
 			return list;
 		}
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			JSONObject jso = null;
+			if(uNextPage.equals("none")){
+				switch(mPlayMode){
+				case 0:	uNextPage = uPlayListMode_0;
+							break;
+				case 1:	uNextPage = uPlayListMode_1;
+							break;
+				case 2:	uNextPage = uPlayListMode_2;
+							break;
+				case 3:	uNextPage = uPlayListMode_3;
+							break;
+				default:	list =  null;
+			}
+			}
+			Log.i("MOE", "play mode:"+Integer.toString(mPlayMode));
+					JSONObject jso = mUser.requestPlayList(uNextPage);
+					if(jso==null){
+//						Log.i("MOE", "jso null");
+//						goOauth();
+						list =  null;
+					}else{
+						try {
+							uNextPage = jso.getJSONObject("response").getJSONObject("information").getString("next_url");
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						for(int i=0;i<9;i++){
+							Song song = new Song();
+							JSONObject moeSong = null;
+							try {
+								moeSong = jso.getJSONObject("response").getJSONArray("playlist").getJSONObject(i);
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							try {
+								song.setTitle(moeSong.getString("title"));
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+//							Log.i("MOE", song.getTitle());
+							try {
+								song.setUrl(moeSong.getString("url"));
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+//							Log.i("MOE", song.getUrl());
+							try {
+								song.setID(moeSong.getString("sub_id"));
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							try {
+								song.setAblum(moeSong.getString("wiki_title"));
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							try {
+								song.setArtist(moeSong.getString("artist"));
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							try {
+								song.setCover(moeSong.getJSONObject("cover").getString("square"));
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+//							Log.i("MOE", "cover:"+song.getCover());
+//							JSONObject fav = moeSong.getJSONObject("fav_sub");
+							if(!moeSong.isNull("fav_sub")){
+								try {
+									song.isLike(moeSong.getJSONObject("fav_sub").getInt("fav_type"));
+								} catch (JSONException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}else{
+								song.isLike(0);
+							}
+							list.add(song);
+						}
+					}
+			/*JSONObject jso = null;
 			try {
 				jso = mUser.requestPlayList(uNextPage);
 			} catch (OAuthMessageSignerException e) {
@@ -471,7 +804,7 @@ public class MoePlayerService extends Service {
 //				Log.i("MOE", song.getUrl());
 				list.add(song);
 		}
-		
+		*/
 	}
 	}
 	
@@ -533,4 +866,107 @@ public class MoePlayerService extends Service {
 		it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
 		startActivity(it);
 	}*/
+	
+	class updateTask extends AsyncTask<String, String, String>{
+
+		@Override
+		protected String doInBackground(String... params) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+	}
+	
+	class initPlayerService extends AsyncTask<String, String, String>{
+
+		@Override
+		protected String doInBackground(String... params) {
+			// TODO Auto-generated method stub
+			try {
+				mListA = updatePlayList();
+			} catch (OAuthMessageSignerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (OAuthExpectationFailedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (OAuthCommunicationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			mListCur = mListA;
+			Log.d("MOE", "do background");
+			return "ok";
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+			Log.d("MOE", "post execute");
+			try {
+				mPlayer.initPlayer();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalStateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Thread timeUpdater = new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					sendTime();
+				}
+			});
+			timeUpdater.start();
+			sendSongInfo(mListCur.get(0));
+			MoePlayerService.this.notify(mListCur.get(0));
+			try {
+				mListB = updatePlayList();
+			} catch (OAuthMessageSignerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (OAuthExpectationFailedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (OAuthCommunicationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}
 }

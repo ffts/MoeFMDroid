@@ -53,26 +53,71 @@ public class User {
 	}
 
 	public JSONObject requestPlayList(String url) 
-			throws URISyntaxException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, 
-			ParseException, IOException, JSONException
+			/*throws URISyntaxException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, 
+			ParseException, IOException, JSONException*/
 	{
 		
 		HttpPost httpPost = new HttpPost();
 		HttpClient client = new DefaultHttpClient();
 		org.apache.http.HttpResponse response = null;
-		URI uri = new URI(url);
+		URI uri = null;
+		try {
+			uri = new URI(url);
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		httpPost.setURI(uri);
-		mConsumer.sign(httpPost);
-		Log.i("MOE", httpPost.getURI().toURL().toString());
-		response = client.execute(httpPost);
+		try {
+			mConsumer.sign(httpPost);
+		} catch (OAuthMessageSignerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (OAuthExpectationFailedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (OAuthCommunicationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			Log.i("MOE", httpPost.getURI().toURL().toString());
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			response = client.execute(httpPost);
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Log.i("MOE", response.getEntity().toString());
 		Log.i("MOE", "HttpStatus:"+Integer.toString(response.getStatusLine().getStatusCode()));
 		if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) {
 
 			mStatus = response.getStatusLine().getStatusCode();
-			String result = EntityUtils.toString(response.getEntity());
+			String result = null;
+			try {
+				result = EntityUtils.toString(response.getEntity());
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 //			Log.i("MOE", result);
-			JSONObject jso = new JSONObject(result);
+			JSONObject jso = null;
+			try {
+				jso = new JSONObject(result);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return jso;
 			
 		}else if(HttpStatus.SC_UNAUTHORIZED == response.getStatusLine().getStatusCode()){
