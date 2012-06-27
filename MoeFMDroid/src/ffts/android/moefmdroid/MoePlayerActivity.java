@@ -413,6 +413,7 @@ public class MoePlayerActivity extends SherlockActivity implements OnNavigationL
 	    public void updateLike(int flag){
 	    	
 	    	final int likeFlag = flag;
+	    	isLike = flag;
 	    	btLike.post(new Runnable() {
 				
 				@Override
