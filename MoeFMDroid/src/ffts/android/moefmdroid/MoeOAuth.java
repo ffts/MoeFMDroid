@@ -15,8 +15,8 @@ public class MoeOAuth {
 	private CommonsHttpOAuthProvider provider;
 	private String access_token,access_token_secret,verifier;
 	private String oauth_url = "none";
-	public static String CONSUMERKEY = "2bbeff3c3349208e0e4f8bad2b1b2f4a04fd6f3fd";
-	public static String CONSUMERSECRET = "79ec971c5dd50e848cd58b5c7399c6f0";
+	public static String CONSUMERKEY = "3e28e27549737c96f4fae920b1a3191d05003bb10";
+	public static String CONSUMERSECRET = "417dda4cadc840ae283d52b01507f3a6";
 	
 	MoeOAuth(	){
 		consumer = new CommonsHttpOAuthConsumer(CONSUMERKEY, CONSUMERSECRET);
@@ -87,7 +87,7 @@ public class MoeOAuth {
 //		return oauth_url;
 	}
 	
-	class getRequestTokenTask extends AsyncTask<String, String, String>{
+	/*class getRequestTokenTask extends AsyncTask<String, String, String>{
 
 		@Override
 		protected String doInBackground(String... params) {
@@ -126,7 +126,7 @@ public class MoeOAuth {
 		
 		
 		
-	}
+	}*/
 	
 	public void getAccessToken() throws OAuthMessageSignerException, OAuthNotAuthorizedException, OAuthExpectationFailedException, OAuthCommunicationException{
 		
@@ -137,7 +137,7 @@ public class MoeOAuth {
 //		new getAccessToken().execute("");
 	}
 	
-	class getAccessToken extends AsyncTask<String, String, String>{
+	/*class getAccessToken extends AsyncTask<String, String, String>{
 
 		@Override
 		protected String doInBackground(String... params) {
@@ -163,6 +163,6 @@ public class MoeOAuth {
 			return null;
 		}
 		
-	}
+	}*/
 	
 }

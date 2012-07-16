@@ -27,8 +27,8 @@ public class User {
 
 //	private String mAccessToken;
 //	private String mAccessTokenSecret;;
-	private static String mConsumerKey = "2bbeff3c3349208e0e4f8bad2b1b2f4a04fd6f3fd";
-	private static String mConsumerSecret = "79ec971c5dd50e848cd58b5c7399c6f0";
+	private static String mConsumerKey = "3e28e27549737c96f4fae920b1a3191d05003bb10";
+	private static String mConsumerSecret = "417dda4cadc840ae283d52b01507f3a6";
 	private CommonsHttpOAuthConsumer mConsumer;
 	public static String uListened = "http://moe.fm/ajax/log?log_obj_type=sub&log_type=listen&obj_type=song&api=json&obj_id=";
 	public static String uLike = "http://api.moefou.org/fav/add.json?fav_obj_type=song&fav_type=1&save_status=1&fav_obj_id=";

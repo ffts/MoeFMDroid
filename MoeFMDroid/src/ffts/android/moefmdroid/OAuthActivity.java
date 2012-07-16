@@ -79,7 +79,9 @@ public class OAuthActivity extends Activity {
 						e.printStackTrace();
 					}
 //					Log.i("MOE", authUrl);
-					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl)));
+					Intent it = new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl));
+//					 it.setClassName("com.android.browser", "com.android.browser.BrowserActivity");
+					startActivity(it);
 				}
 			});
 			th.start();

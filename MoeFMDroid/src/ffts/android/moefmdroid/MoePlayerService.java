@@ -76,6 +76,7 @@ public class MoePlayerService extends Service {
 		}
 	}
 	
+	//初始化播放服务，主要是获取播放列表
 	public void initPlayerService(){
 		
 		Thread th = new Thread(new Runnable() {
@@ -140,6 +141,7 @@ public class MoePlayerService extends Service {
 		mListCur = mListA;*/
 	}
 	
+	//开始播放
 	public void startPlay() {
 		/*if(mUser.mStatus==HttpStatus.SC_UNAUTHORIZED){
 			goOauth();
