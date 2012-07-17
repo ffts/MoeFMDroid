@@ -35,6 +35,11 @@ public class User {
 	public static String uUnLike = "http://api.moefou.org/fav/add.json?fav_obj_type=song&fav_type=2&save_status=1&fav_obj_id=";
 	public static String uDeleteFav = "http://api.moefou.org/fav/delete.json?fav_obj_type=song&fav_obj_id=";
 	public static String uUser = "http://api.moefou.org/user/detail.json";
+	public static String uLikeAblum = "http://api.moefou.org/fav/add.json?fav_obj_type=music&fav_type=1&save_status=1&fav_obj_id=";
+	public static String uDeleteFavAblum = "http://api.moefou.org/fav/delete.json?fav_obj_type=music&fav_obj_id=";
+	public static int TYPE_SONG = 0;
+	public static int TYPE_MUSIC = 1;
+	public static int TYPE_RADIO = 2;
 //	private CommonsHttpOAuthProvider mProvider;
 	public int mStatus;
 	
@@ -247,10 +252,15 @@ public class User {
 		}
 	}*/
 	
-	public void addFav(String id, int flag){
+	public void addFav(String id, int flag, int type){
 		String url = "";
 		if(flag == 1){
-			url = uLike;
+			if(type==TYPE_SONG){
+				url = uLike;
+			}else if(type==TYPE_MUSIC){
+				url = uLikeAblum;
+			}
+			
 		}else if(flag == 2){
 			url = uUnLike;
 		}
@@ -293,12 +303,18 @@ public class User {
 		}
 	}
 	
-	public void deleteFav(String id){
+	public void deleteFav(String id, int type){
 		HttpPost httpPost = new HttpPost();
 		HttpClient client = new DefaultHttpClient();
 		URI uri = null;
+		String url = "";
+		if(type==TYPE_SONG){
+			url = uDeleteFav;
+		}else if(type==TYPE_MUSIC){
+			url = uDeleteFavAblum;
+		}
 		try {
-			uri = new URI(uDeleteFav+id);
+			uri = new URI(url+id);
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

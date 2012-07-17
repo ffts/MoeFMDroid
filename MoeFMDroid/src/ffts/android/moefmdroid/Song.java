@@ -5,10 +5,12 @@ public class Song {
 	private String mID;
 	private String mTitle;
 	private String mAblum;
+	private String mAblumID;
 	private String mArtist;
 	private String mCover;
 	private String mUrl;
 	private int isLike = 0;
+	private int isLikeAblum = 0;
 	
 	public Song(){
 		mID = "none";
@@ -43,6 +45,14 @@ public class Song {
 		return this.mAblum;
 	}
 	
+	public void setAblumID(String id){
+		this.mAblumID = id;
+	}
+	
+	public String getAblumID(){
+		return this.mAblumID;
+	}
+	
 	public void setArtist(String artist){
 		this.mArtist = artist;
 	}
@@ -73,5 +83,13 @@ public class Song {
 	
 	public int isLike(){
 		return this.isLike;
+	}
+	
+	public void isLikeAblum(int flag){
+		this.isLikeAblum = flag;
+	}
+	
+	public int isLikeAblum(){
+		return this.isLikeAblum;
 	}
 }

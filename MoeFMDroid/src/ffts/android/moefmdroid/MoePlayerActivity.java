@@ -62,11 +62,13 @@ public class MoePlayerActivity extends SherlockActivity implements OnNavigationL
 	TextView tvArtist;
 	TextView tvAblum;
 	ImageView ivCover;
+	ImageView ivFavAblum;
 	TextView tvCurTime;
 	TextView tvTotalTime;
 	ProgressBar pbProgress;
 	Handler handler=new Handler();
 	int isLike = 0;
+	int isLikeAblum = 0;
 	private GestureDetector gestureScanner;
 	
 	
@@ -81,6 +83,7 @@ public class MoePlayerActivity extends SherlockActivity implements OnNavigationL
 		tvArtist = (TextView) findViewById(R.id.artist);
 		tvAblum = (TextView) findViewById(R.id.ablum);
 		ivCover = (ImageView) findViewById(R.id.cover);
+		ivFavAblum = (ImageView) findViewById(R.id.favablum);
 		tvCurTime = (TextView) findViewById(R.id.curtime);
 		tvTotalTime = (TextView) findViewById(R.id.totaltime);
 		pbProgress = (ProgressBar) findViewById(R.id.progress);
@@ -182,13 +185,13 @@ public class MoePlayerActivity extends SherlockActivity implements OnNavigationL
 				if(isLike==0){
 					Drawable like = getResources().getDrawable(R.drawable.btn_liked);
 					btLike.setImageDrawable(like);
-					mService.addFav(1);
+					mService.addFav(1, User.TYPE_SONG);
 					isLike = 1;
 					Toast.makeText(getApplicationContext(), R.string.added, Toast.LENGTH_LONG).show();
 				}else if(isLike==1){
 					Drawable like = getResources().getDrawable(R.drawable.btn_like);
 					btLike.setImageDrawable(like);
-					mService.deleteFav();
+					mService.deleteFav(User.TYPE_SONG);
 					isLike = 0;
 					Toast.makeText(getApplicationContext(), R.string.deleted, Toast.LENGTH_LONG).show();
 				}
@@ -201,7 +204,7 @@ public class MoePlayerActivity extends SherlockActivity implements OnNavigationL
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				mService.addFav(2);
+				mService.addFav(2, User.TYPE_SONG);
 				Toast.makeText(getApplicationContext(), R.string.unlike, Toast.LENGTH_LONG).show();
 				try {
 					mService.playNext();
@@ -239,6 +242,26 @@ public class MoePlayerActivity extends SherlockActivity implements OnNavigationL
 			}
 		});
 		
+		tvAblum.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				if(isLikeAblum==0){
+					Drawable likeAblum = getResources().getDrawable(R.drawable.btn_ablum_liked);
+					ivFavAblum.setImageDrawable(likeAblum);
+					mService.addFav(1, User.TYPE_MUSIC);
+					isLikeAblum = 1;
+					Toast.makeText(getApplicationContext(), R.string.added, Toast.LENGTH_LONG).show();
+				}else if(isLikeAblum==1){
+					Drawable likeAblum = getResources().getDrawable(R.drawable.btn_ablum_like);
+					ivFavAblum.setImageDrawable(likeAblum);
+					mService.deleteFav(User.TYPE_MUSIC);
+					isLikeAblum = 0;
+					Toast.makeText(getApplicationContext(), R.string.deleted, Toast.LENGTH_LONG).show();
+				}
+			}
+		});
 //		mPlayModes = getResources().getStringArray(R.array.playmode);
 /*		Log.i("MOE", mPlayModes[0]);
 		Log.i("MOE", mPlayModes[1]);
@@ -343,7 +366,7 @@ public class MoePlayerActivity extends SherlockActivity implements OnNavigationL
 //				Log.i("MOE", "action:"+action);
 				if(action.equals("ffts.android.moefmdroid.updatesong")){
 //					Log.i("MOE", "update UI");
-					updatePlayer(intent.getStringArrayExtra("info"),intent.getIntExtra("fav", 0));
+					updatePlayer(intent.getStringArrayExtra("info"),intent.getIntExtra("fav", 0),intent.getIntExtra("fav_ablum",0));
 				}else if(action.equals("ffts.android.moefmdroid.updatetime")){
 					int[] time = intent.getIntArrayExtra("time");
 					updateTime(time[0], time[1]);
@@ -353,7 +376,7 @@ public class MoePlayerActivity extends SherlockActivity implements OnNavigationL
 	    	
 	    }
 	    
-	    public void updatePlayer(String[] info ,int flag){
+	    public void updatePlayer(String[] info ,int flagFav, int flagFavAblum){
 	    	Log.i("MOE", "update UI start>>>>>>>>");
 	    	tvTitle.setText(info[0]);
 	    	tvTitle.requestFocus();
@@ -364,7 +387,8 @@ public class MoePlayerActivity extends SherlockActivity implements OnNavigationL
 //	    	Log.i("MOE", info[2]);
 //	    	updateCover(info[3]);
 	    	new CoverUpdater().execute(info[3]);
-	    	updateLike(flag);
+	    	updateLike(flagFav);
+	    	updateLikeAblum(flagFavAblum);
 	    	/*if(flag==0){
 	    		Drawable pause = getResources().getDrawable(R.drawable.btn_pause);
 				btPlay.setImageDrawable(pause);
@@ -429,6 +453,27 @@ public class MoePlayerActivity extends SherlockActivity implements OnNavigationL
 				}
 			});
 	    }
+	    
+	    public void updateLikeAblum(int flag){
+	    	
+	    	final int likeAblumFlag = flag;
+	    	isLikeAblum = flag;
+	    	ivFavAblum.post(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					Drawable like;
+			    	if(likeAblumFlag==0){
+			    		like = getResources().getDrawable(R.drawable.btn_ablum_like);
+			    	}else{
+			    		like = getResources().getDrawable(R.drawable.btn_ablum_liked);
+			    	}
+					ivFavAblum.setImageDrawable(like);
+				}
+			});
+	    }
+	    
 	    public void updateTime(int cur, int total){
 	    	if(total!=0){
 	    		tvCurTime.setText(formateTime(cur));

@@ -353,6 +353,7 @@ public class MoePlayerService extends Service {
 //						Log.i("MOE", song.getUrl());
 						song.setID(moeSong.getString("sub_id"));
 						song.setAblum(moeSong.getString("wiki_title"));
+						song.setAblumID(moeSong.getString("wiki_id"));
 						song.setArtist(moeSong.getString("artist"));
 						song.setCover(moeSong.getJSONObject("cover").getString("square"));
 //						Log.i("MOE", "cover:"+song.getCover());
@@ -361,6 +362,11 @@ public class MoePlayerService extends Service {
 							song.isLike(moeSong.getJSONObject("fav_sub").getInt("fav_type"));
 						}else{
 							song.isLike(0);
+						}
+						if(!moeSong.isNull("fav_wiki")){
+							song.isLikeAblum(moeSong.getJSONObject("fav_wiki").getInt("fav_type"));
+						}else{
+							song.isLikeAblum(0);
 						}
 						list.add(song);
 					}
@@ -490,29 +496,42 @@ public class MoePlayerService extends Service {
 	
 		}
 	}
-	public void addFav(final int flag){
+	public void addFav(final int flag, final int type){
 //		mUser.addFav(mListCur.get(mCount).getID(), flag);
-		final String id = mListCur.get(mCount).getID();
+		String tID = "";
+		if(type==User.TYPE_SONG){
+			tID = mListCur.get(mCount).getID();
+		}else if(type==User.TYPE_MUSIC){
+			tID = mListCur.get(mCount).getAblumID();
+		}
+		final String id = tID;
 		Thread th = new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				mUser.addFav(id, flag);
+				mUser.addFav(id, flag, type);
 			}
 		});
 		th.start();
 	}
 	
-	public void deleteFav(){
+	public void deleteFav(final int type){
 //		mUser.deleteFav(mListCur.get(mCount).getID());
-		final String id = mListCur.get(mCount).getID();
+		String tID = "";
+		if(type==User.TYPE_SONG){
+			tID = mListCur.get(mCount).getID();
+		}else if(type==User.TYPE_MUSIC){
+			tID = mListCur.get(mCount).getAblumID();
+		}
+		final String id = tID;
+//		final String id = mListCur.get(mCount).getID();
 		Thread th = new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				mUser.deleteFav(id);
+				mUser.deleteFav(id, type);
 			}
 		});
 		th.start();
@@ -561,15 +580,7 @@ public class MoePlayerService extends Service {
 				public void onCompletion(MediaPlayer mp) {
 					// TODO Auto-generated method stub
 					final String id = mListCur.get(mCount).getID();
-					Thread th = new Thread(new Runnable() {
-						
-						@Override
-						public void run() {
-							// TODO Auto-generated method stub
-							mUser.setListened(id);
-						}
-					});
-					th.start();
+					
 					try {
 						playNext();
 					} catch (IllegalArgumentException e) {
@@ -603,6 +614,15 @@ public class MoePlayerService extends Service {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					Thread th = new Thread(new Runnable() {
+						
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							mUser.setListened(id);
+						}
+					});
+					th.start();
 				}
 			});
 		}
@@ -818,8 +838,10 @@ public class MoePlayerService extends Service {
 		info[2] = song.getAblum();
 		info[3] = song.getCover();
 		int fav = song.isLike();
+		int favAblum = song.isLikeAblum();
 		it.putExtra("info", info);
 		it.putExtra("fav", fav);
+		it.putExtra("fav_ablum", favAblum);
 		this.sendBroadcast(it);
 	}
 	
