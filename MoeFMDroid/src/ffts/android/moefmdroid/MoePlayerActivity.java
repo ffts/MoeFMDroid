@@ -305,7 +305,11 @@ public class MoePlayerActivity extends SherlockActivity implements OnNavigationL
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 		// TODO Auto-generated method stub
-		mService.changeMode(itemPosition);
+		if(mService!=null){
+			mService.changeMode(itemPosition);
+		}
+		Log.i("MOE", Integer.toString(itemPosition));
+		Log.i("MOE", "mService:"+mService);
 //		Toast.makeText(getApplicationContext(), Integer.toString(itemPosition), Toast.LENGTH_LONG).show();
 		return true;
 	}

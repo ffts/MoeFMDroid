@@ -569,7 +569,7 @@ public class MoePlayerService extends Service {
 		
 	}
 
-
+//播放器类
 	class Player {
 		MediaPlayer mp;
 		Player(){
