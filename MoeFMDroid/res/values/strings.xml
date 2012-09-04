@@ -9,6 +9,7 @@
     <string name = "deleted">已取消收藏</string>
     <string name = "unlike">已抛弃</string>
     <string name="network_error">网络链接错误，请检查网络</string>
+    <string name="no_song_playing">没有正在播放的曲目</string>
     
     <string name="btn_oauth">授权</string>
     <string name="settings">设置</string>

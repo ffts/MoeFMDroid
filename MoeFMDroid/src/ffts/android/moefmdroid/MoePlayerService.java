@@ -16,8 +16,10 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -39,7 +41,16 @@ public class MoePlayerService extends Service {
 	public static String uPlayListMode_2 = "http://moe.fm/listen/playlist?api=json&fav=song";
 	public static String uPlayListMode_3 = "http://moe.fm/listen/playlist?api=json&fav=radio";
 	
+	public static final String TOGGLE_PLAY = "ffts.android.moefmdroid.toggleplay";
+	public static final String PLAY = "MoeFMDroidPlay";
+	public static final String PAUSE = "MoeFMDroidPause";
+	public static final String NEXT = "ffts.android.moefmdroid.next";
+	public static final String UPDATE_SONG = "ffts.android.moefmdroid.updatesong";
+	public static final String UPDATE_WIDGET = "ffts.android.moefm.updatewidget";
+	
 	MoeBinder mBinder = new MoeBinder();
+	MoeWidgetProvider mWidgetProvider = MoeWidgetProvider.getInstance();
+	MoeServiceReceiver mReceiver;
 	Vector<Song> mListCur;//当前使用列表
 	Vector<Song> mListA = new Vector<Song>();//列表A
 	Vector<Song> mListB = new Vector<Song>();//列表B
@@ -57,6 +68,8 @@ public class MoePlayerService extends Service {
 		SharedPreferences sp = getSharedPreferences("MoeFM", MODE_PRIVATE);
 		mUser = new User(sp.getString("access_token", ""), sp.getString("access_token_secret", ""));
 		mPlayer = new  Player();
+		mReceiver = new MoeServiceReceiver();
+		setRecevier(getApplicationContext(), mReceiver);
 //		initPlayerService();
 	}
 
@@ -347,7 +360,7 @@ public class MoePlayerService extends Service {
 					for(int i=0;i<9;i++){
 						Song song = new Song();
 						JSONObject moeSong = jso.getJSONObject("response").getJSONArray("playlist").getJSONObject(i);
-						song.setTitle(moeSong.getString("title"));
+						song.setTitle(moeSong.getString("sub_title"));
 						Log.i("MOE", song.getTitle());
 						song.setUrl(moeSong.getString("url"));
 //						Log.i("MOE", song.getUrl());
@@ -460,7 +473,7 @@ public class MoePlayerService extends Service {
 		}
 	}
 	
-	public void togglePlay(boolean playing) throws IllegalArgumentException, SecurityException, IllegalStateException, IOException{
+	public void togglePlay(boolean playing){
 		Log.i("MOE", Boolean.toString(playing));
 		if(isPlaying){
 			mPlayer.pause();
@@ -469,6 +482,18 @@ public class MoePlayerService extends Service {
 		}
 //		Log.i("MOE", "now playing:"+mListCur.get(mCount).getTitle());
 		isPlaying = playing;
+		mWidgetProvider.notifyChange(this, TOGGLE_PLAY);
+	}
+	
+	public boolean togglePlay(){
+		if(isPlaying){
+			mPlayer.pause();
+		}else{
+			mPlayer.resum();
+		}
+		isPlaying = (!isPlaying);
+		mWidgetProvider.notifyChange(this, TOGGLE_PLAY);
+		return isPlaying;
 	}
 	
 	public void playNext() throws IllegalArgumentException, SecurityException, IllegalStateException, IOException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException, ParseException, URISyntaxException, JSONException{
@@ -484,6 +509,7 @@ public class MoePlayerService extends Service {
 		sendSongInfo(mListCur.get(mCount));
 		notify(mListCur.get(mCount));
 		isPlaying = true;
+		mWidgetProvider.notifyChange(this, TOGGLE_PLAY);
 	}
 	
 	public void changeMode(int mode){
@@ -842,6 +868,7 @@ public class MoePlayerService extends Service {
 		it.putExtra("info", info);
 		it.putExtra("fav", fav);
 		it.putExtra("fav_ablum", favAblum);
+		mWidgetProvider.notifyChange(this, UPDATE_SONG);
 		this.sendBroadcast(it);
 	}
 	
@@ -992,5 +1019,71 @@ public class MoePlayerService extends Service {
 			}
 		}
 		
+	}
+	
+	class MoeServiceReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			if(TOGGLE_PLAY.equals(intent.getAction())){
+				togglePlay();
+			}
+			
+			if(NEXT.equals(intent.getAction())){
+				try {
+					playNext();
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SecurityException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalStateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (OAuthMessageSignerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (OAuthExpectationFailedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (OAuthCommunicationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (URISyntaxException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			if(UPDATE_WIDGET.equals(intent.getAction())){
+				Log.d("MOED", "need to update widget");
+				mWidgetProvider.notifyChange(MoePlayerService.this, UPDATE_SONG);
+				mWidgetProvider.notifyChange(MoePlayerService.this, TOGGLE_PLAY);
+			}
+		}
+		
+	}
+	
+	private void setRecevier(Context context, MoeServiceReceiver receiver){
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(TOGGLE_PLAY);
+		filter.addAction(NEXT);
+		filter.addAction(UPDATE_WIDGET);
+		context.registerReceiver(receiver, filter);
+	}
+	
+	public Song getCurSong(){
+		return mListCur.get(mCount);
 	}
 }
