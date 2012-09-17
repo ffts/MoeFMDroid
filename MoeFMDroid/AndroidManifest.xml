@@ -20,14 +20,7 @@
             </intent-filter>
         </activity>
         <activity 
-            android:name= ".OAuthActivity"
-            android:launchMode="singleInstance">
-            <intent-filter>
-            	<action android:name="android.intent.action.VIEW" />
-            	<category android:name="android.intent.category.DEFAULT" />
-            	<category android:name="android.intent.category.BROWSABLE" />
-            	<data android:scheme="mfmd" android:host="OAuthActivity"/> 
-            </intent-filter>
+            android:name= ".OAuthActivity">
         </activity>
         <activity 
             android:name=".MoePlayerActivity"
@@ -36,6 +29,7 @@
         </activity>
         <service android:name="MoePlayerService"></service>
         <activity android:name="MoeSettingsActivity"></activity>
+        <activity android:name="WebViewActivity"></activity>
         <receiver 
             android:name="MoeWidgetProvider">
             <intent-filter >

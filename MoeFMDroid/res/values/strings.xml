@@ -4,7 +4,7 @@
     <string name="hello">Hello World, MoeFMDroidActivity!</string>
     <string name="app_name">萌否收音姬</string>
     <string name="login">收音姬连接中...</string>
-    <string name="need_oauth">未检测到萌否账号，或帐号的授权已经失效，请点击"授权"按钮，跳转到萌否页面，登录萌否帐号并对应用进行授权。授权时请使用系统自带浏览器。</string>
+    <string name="need_oauth">未检测到萌否账号，或帐号的授权已经失效，请点击"授权"按钮，跳转到萌否页面，登录萌否帐号并对应用进行授权。</string>
     <string name = "added">已添加收藏</string>
     <string name = "deleted">已取消收藏</string>
     <string name = "unlike">已抛弃</string>
