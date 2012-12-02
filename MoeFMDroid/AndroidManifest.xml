@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ffts.android.moefmdroid"
-    android:versionCode="8"
-    android:versionName="Beta v0.9.3.0" >
+    android:versionCode="9"
+    android:versionName="Beta v0.9.4.0" >
 
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="14"/>
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -20,14 +20,7 @@
             </intent-filter>
         </activity>
         <activity 
-            android:name= ".OAuthActivity"
-            android:launchMode="singleInstance">
-            <intent-filter>
-            	<action android:name="android.intent.action.VIEW" />
-            	<category android:name="android.intent.category.DEFAULT" />
-            	<category android:name="android.intent.category.BROWSABLE" />
-            	<data android:scheme="mfmd" android:host="OAuthActivity"/> 
-            </intent-filter>
+            android:name= ".OAuthActivity">
         </activity>
         <activity 
             android:name=".MoePlayerActivity"
@@ -36,6 +29,7 @@
         </activity>
         <service android:name="MoePlayerService"></service>
         <activity android:name="MoeSettingsActivity"></activity>
+        <activity android:name="WebViewActivity"></activity>
         <receiver 
             android:name="MoeWidgetProvider">
             <intent-filter >
