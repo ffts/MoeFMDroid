@@ -121,10 +121,7 @@ public class MoePlayerActivity extends SherlockActivity implements OnNavigationL
 						} catch (IllegalStateException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+						} 
 			}
 			}
 		});
@@ -283,7 +280,6 @@ public class MoePlayerActivity extends SherlockActivity implements OnNavigationL
 	@Override
 	protected void onStart() {
 		// TODO Auto-generated method stub
-		super.onStart();
 		Intent intent = new Intent(MoePlayerActivity.this, MoePlayerService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
       //注册BroadcastReceiver
@@ -292,8 +288,20 @@ public class MoePlayerActivity extends SherlockActivity implements OnNavigationL
         filter.addAction("ffts.android.moefmdroid.updatesong");
         filter.addAction("ffts.android.moefmdroid.updatetime");
         this.registerReceiver(receiver, filter);
+        
+        if(mService!=null){
+        	isPlaying = mService.isPlaying;
+        	Song curSong = mService.getCurSong();
+        	if(curSong!=null){
+    			updatePlaying(isPlaying);
+    			String[] info = {curSong.getTitle(),curSong.getArtist(),curSong.getAblum(),curSong.getCover()};
+    			updatePlayer(info, isLike, isLikeAblum);
+    		}
+        }
+		super.onStart();
 //        Log.i("MOE", "onStart bind");
 	}
+	
 
 	@Override
 	protected void onStop() {
@@ -305,7 +313,11 @@ public class MoePlayerActivity extends SherlockActivity implements OnNavigationL
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 		// TODO Auto-generated method stub
-		mService.changeMode(itemPosition);
+		if(mService!=null){
+			mService.changeMode(itemPosition);
+		}
+		Log.i("MOE", Integer.toString(itemPosition));
+		Log.i("MOE", "mService:"+mService);
 //		Toast.makeText(getApplicationContext(), Integer.toString(itemPosition), Toast.LENGTH_LONG).show();
 		return true;
 	}
@@ -375,7 +387,7 @@ public class MoePlayerActivity extends SherlockActivity implements OnNavigationL
 			}
 	    	
 	    }
-	    
+	    //0:title;1:artist;2:ablum;3:cover
 	    public void updatePlayer(String[] info ,int flagFav, int flagFavAblum){
 	    	Log.i("MOE", "update UI start>>>>>>>>");
 	    	tvTitle.setText(info[0]);
@@ -433,6 +445,24 @@ public class MoePlayerActivity extends SherlockActivity implements OnNavigationL
 			}
 			
 	    	
+	    }
+	    
+	    public void updatePlaying(boolean isPlaying){
+	    	final boolean play = isPlaying;
+	    	btPlay.post(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					Drawable playing;
+					if(play){
+						playing = getResources().getDrawable(R.drawable.btn_pause);
+					}else{
+						playing = getResources().getDrawable(R.drawable.btn_play);
+					}
+					btPlay.setImageDrawable(playing);
+				}
+			});
 	    }
 	    public void updateLike(int flag){
 	    	
