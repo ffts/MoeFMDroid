@@ -10,7 +10,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:hardwareAccelerated="true"
-        android:theme="@style/Theme.HoloEverywhereDark.Sherlock" >
+        android:theme="@style/Holo.Theme" >
         <activity
             android:name=".MoeFMDroidActivity"
             android:label="@string/app_name" >

@@ -16,7 +16,7 @@
         android:paddingBottom="10dip">
         <ProgressBar 
             android:indeterminate="true"
-            style="@style/ProgressBarHolo.Small"
+            style="?android:attr/progressBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"/>
